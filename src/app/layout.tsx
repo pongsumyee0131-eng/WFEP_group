@@ -1,51 +1,39 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces } from "next/font/google";
-import { CartDrawer } from "@/components/CartDrawer";
-import { CookieBanner } from "@/components/CookieBanner";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { CartProvider } from "@/context/CartContext";
-import { CookieProvider } from "@/context/CookieContext";
+import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
+import { AppProviders } from "@/components/providers/AppProviders";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const notoSans = Noto_Sans_JP({
   subsets: ["latin"],
+  variable: "--font-noto-sans",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const notoSerif = Noto_Serif_JP({
   subsets: ["latin"],
+  variable: "--font-noto-serif",
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "WFEP Wellness | Calmexa XR",
-    template: "%s | WFEP Wellness",
-  },
+  title: "CraftLink — Premium Creative Freelance Marketplace",
   description:
-    "Shop Calmexa XR — extended-release wellness support. Third-party tested, vegan capsules.",
+    "Connect with exceptional graphic designers, illustrators, and brand artists. Secure escrow, milestone payments, serene collaboration.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${dmSans.variable} ${fraunces.variable} antialiased`}>
-        <CookieProvider>
-          <CartProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-            <CartDrawer />
-            <CookieBanner />
-          </CartProvider>
-        </CookieProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${notoSans.variable} ${notoSerif.variable} antialiased min-h-screen flex flex-col`}>
+        <AppProviders>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AppProviders>
       </body>
     </html>
   );

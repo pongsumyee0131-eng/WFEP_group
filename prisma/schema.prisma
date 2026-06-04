@@ -1,0 +1,307 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  FREELANCER
+  CLIENT
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  AWAITING_DELIVERY
+  REVIEW_PERIOD
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum MilestoneStage {
+  CONCEPT
+  DRAFT
+  FINAL
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  APPROVED
+  REVISION_REQUESTED
+}
+
+enum EscrowStatus {
+  HELD
+  PARTIALLY_RELEASED
+  RELEASED
+  REFUNDED
+}
+
+enum DeliveryStatus {
+  PENDING
+  DELIVERED
+  ACCEPTED
+  EXPIRED
+}
+
+enum NotificationType {
+  ORDER
+  MILESTONE
+  PAYMENT
+  MESSAGE
+  REVIEW
+  SYSTEM
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String
+  name      String?
+  role      UserRole?
+  avatarUrl String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  freelancerProfile FreelancerProfile?
+  clientOrders      Order[]            @relation("ClientOrders")
+  freelancerOrders  Order[]            @relation("FreelancerOrders")
+  sentMessages      Message[]          @relation("SentMessages")
+  reviewsGiven      Review[]           @relation("ReviewsGiven")
+  reviewsReceived   Review[]           @relation("ReviewsReceived")
+  notifications     Notification[]
+  conversationMembers ConversationMember[]
+}
+
+model FreelancerProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title           String
+  tagline         String?
+  skills          String[]
+  categories      String[]
+  hourlyRate      Float?
+  location        String?
+  yearsExperience Int      @default(0)
+  isAvailable     Boolean  @default(true)
+  revisionPolicy  String?
+  responseTime    String?
+  totalOrders     Int      @default(0)
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  portfolioItems PortfolioItem[]
+  servicePackages ServicePackage[]
+}
+
+model PortfolioItem {
+  id          String   @id @default(cuid())
+  profileId   String
+  profile     FreelancerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  imageUrl    String
+  category    String?
+  tags        String[]
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model ServicePackage {
+  id          String   @id @default(cuid())
+  profileId   String
+  profile     FreelancerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  price       Float
+  deliveryDays Int
+  revisions   Int      @default(2)
+  features    String[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  clientId        String
+  client          User        @relation("ClientOrders", fields: [clientId], references: [id])
+  freelancerId    String
+  freelancer      User        @relation("FreelancerOrders", fields: [freelancerId], references: [id])
+  servicePackageId String?
+  servicePackage  ServicePackage? @relation(fields: [servicePackageId], references: [id])
+  title           String
+  brief           String
+  budget          Float
+  status          OrderStatus @default(PENDING)
+  revisionLimit   Int         @default(2)
+  revisionsUsed   Int         @default(0)
+  reviewDeadline  DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  acceptedAt      DateTime?
+  completedAt     DateTime?
+
+  milestones    Milestone[]
+  escrow        EscrowPayment?
+  delivery      Delivery?
+  attachments   OrderAttachment[]
+  reviews       Review[]
+  conversation  Conversation?
+}
+
+model OrderAttachment {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fileName  String
+  fileUrl   String
+  fileType  String?
+  uploadedBy String
+  createdAt DateTime @default(now())
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  orderId     String
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  stage       MilestoneStage
+  title       String
+  description String?
+  amount      Float
+  status      MilestoneStatus @default(PENDING)
+  dueDate     DateTime?
+  submittedAt DateTime?
+  approvedAt  DateTime?
+  feedback    String?
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  submissions MilestoneSubmission[]
+}
+
+model MilestoneSubmission {
+  id          String   @id @default(cuid())
+  milestoneId String
+  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  fileUrl     String
+  fileName    String
+  previewUrl  String?
+  notes       String?
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+}
+
+model EscrowPayment {
+  id              String       @id @default(cuid())
+  orderId         String       @unique
+  order           Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  totalAmount     Float
+  heldAmount      Float
+  releasedAmount  Float        @default(0)
+  status          EscrowStatus @default(HELD)
+  paidAt          DateTime     @default(now())
+  fullyReleasedAt DateTime?
+}
+
+model Delivery {
+  id            String         @id @default(cuid())
+  orderId       String         @unique
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status        DeliveryStatus @default(PENDING)
+  previewUrl    String?
+  watermarkNote String?
+  expiresAt     DateTime?
+  deliveredAt   DateTime?
+  acceptedAt    DateTime?
+  files         DeliveryFile[]
+}
+
+model DeliveryFile {
+  id         String   @id @default(cuid())
+  deliveryId String
+  delivery   Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileUrl    String
+  fileType   String?
+  isSource   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  reviewerId   String
+  reviewer     User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  revieweeId   String
+  reviewee     User     @relation("ReviewsReceived", fields: [revieweeId], references: [id])
+  rating       Int
+  comment      String?
+  createdAt    DateTime @default(now())
+
+  @@unique([orderId, reviewerId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  orderId   String?  @unique
+  order     Order?   @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  ConversationMember[]
+  messages Message[]
+}
+
+model ConversationMember {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime     @default(now())
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  content        String
+  fileUrl        String?
+  fileName       String?
+  version        Int?
+  createdAt      DateTime     @default(now())
+  readAt         DateTime?
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
