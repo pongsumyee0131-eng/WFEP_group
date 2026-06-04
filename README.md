@@ -1,4 +1,4 @@
-Janice # WFEP Wellness — Product Store
+Janice Vincy # WFEP Wellness — Product Store
 
 Modern Next.js storefront for **Calmexa XR**, a fictional wellness supplement, with full legal pages and cookie consent.
 
