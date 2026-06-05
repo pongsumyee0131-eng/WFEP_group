@@ -1,25 +1,30 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Sparkles } from "lucide-react";
 
-const footerLinks = {
-  Platform: [
-    { label: "Find Talent", href: "/talent" },
-    { label: "Post a Project", href: "/projects/new" },
-    { label: "How Escrow Works", href: "/#escrow" },
-  ],
-  Creatives: [
-    { label: "Become a Freelancer", href: "/onboarding" },
-    { label: "Portfolio Tips", href: "#" },
-    { label: "Pricing Guide", href: "#" },
-  ],
-  Company: [
-    { label: "About", href: "#" },
-    { label: "Trust & Safety", href: "#" },
-    { label: "Contact", href: "#" },
-  ],
-};
-
 export function Footer() {
+  const t = useTranslations("footer");
+
+  const footerLinks = {
+    [t("platform")]: [
+      { label: t("findTalent"), href: "/talent" as const },
+      { label: t("postProject"), href: "/projects/new" as const },
+      { label: t("escrow"), href: "/trust-and-safety" as const },
+    ],
+    [t("creatives")]: [
+      { label: t("becomeFreelancer"), href: "/onboarding" as const },
+      { label: t("portfolioTips"), href: "/portfolio-tips" as const },
+      { label: t("pricingGuide"), href: "/pricing-guide" as const },
+    ],
+    [t("company")]: [
+      { label: t("about"), href: "/about" as const },
+      { label: t("trustSafety"), href: "/trust-and-safety" as const },
+      { label: t("contact"), href: "/contact" as const },
+    ],
+  };
+
   return (
     <footer className="border-t border-border/50 bg-card/50 pattern-seigaiha">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -34,8 +39,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground leading-relaxed">
-              A serene marketplace connecting creative professionals with clients who value
-              craftsmanship, clarity, and trust.
+              {t("tagline")}
             </p>
           </div>
           {Object.entries(footerLinks).map(([title, links]) => (
@@ -58,11 +62,9 @@ export function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-8 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} CraftLink. Crafted with care.
+            © {new Date().getFullYear()} {t("copyright")}
           </p>
-          <p className="text-xs text-muted-foreground font-serif italic">
-            美は細部に宿る — Beauty lives in the details
-          </p>
+          <p className="text-xs text-muted-foreground font-serif italic">{t("motto")}</p>
         </div>
       </div>
     </footer>

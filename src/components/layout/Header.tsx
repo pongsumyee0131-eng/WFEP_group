@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { AuthButtons } from "./AuthButtons";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Menu, X, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,16 +12,17 @@ import { ThemeToggle } from "./ThemeToggle";
 import { NotificationsBell } from "./NotificationsBell";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
-  { href: "/talent", label: "Find Talent" },
-  { href: "/projects/new", label: "Post Project" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/messages", label: "Messages" },
-];
-
 export function Header() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { href: "/talent" as const, label: t("findTalent") },
+    { href: "/projects/new" as const, label: t("postProject") },
+    { href: "/dashboard" as const, label: t("dashboard") },
+    { href: "/messages" as const, label: t("messages") },
+  ];
 
   return (
     <motion.header
@@ -60,6 +62,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher className="hidden sm:flex" />
           <NotificationsBell />
           <ThemeToggle />
           <AuthButtons />
@@ -68,7 +71,7 @@ export function Header() {
             size="icon"
             className="md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
+            aria-label={t("menu")}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
@@ -79,9 +82,11 @@ export function Header() {
         <motion.nav
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
           className="border-t border-border/50 px-4 py-4 md:hidden"
         >
+          <div className="mb-4 flex justify-center sm:hidden">
+            <LanguageSwitcher />
+          </div>
           {navLinks.map((link) => (
             <Link
               key={link.href}

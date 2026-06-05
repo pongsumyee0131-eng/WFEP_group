@@ -1,23 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { Palette, PenTool, Layers, Monitor } from "lucide-react";
-import { CATEGORIES } from "@/types";
 
-const categoryIcons: Record<string, React.ElementType> = {
-  "Graphic Design": Palette,
-  Illustration: PenTool,
-  "Brand Design": Layers,
-  "Web Design": Monitor,
-};
+const categoryKeys = [
+  { key: "graphicDesign", icon: Palette },
+  { key: "illustration", icon: PenTool },
+  { key: "brandDesign", icon: Layers },
+  { key: "webDesign", icon: Monitor },
+] as const;
 
 const container = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
+  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const item = {
@@ -26,7 +23,8 @@ const item = {
 };
 
 export function CategoriesSection() {
-  const featured = CATEGORIES.slice(0, 4);
+  const t = useTranslations("landing");
+  const tc = useTranslations("categories");
 
   return (
     <section className="py-20">
@@ -38,11 +36,9 @@ export function CategoriesSection() {
           className="text-center"
         >
           <h2 className="font-serif text-3xl font-semibold text-foreground">
-            Popular categories
+            {t("categoriesTitle")}
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Curated talent across the creative disciplines you need most
-          </p>
+          <p className="mt-3 text-muted-foreground">{t("categoriesSubtitle")}</p>
         </motion.div>
 
         <motion.div
@@ -52,11 +48,11 @@ export function CategoriesSection() {
           viewport={{ once: true, margin: "-50px" }}
           className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {featured.map((cat) => {
-            const Icon = categoryIcons[cat] ?? Palette;
+          {categoryKeys.map(({ key, icon: Icon }) => {
+            const label = tc(key);
             return (
-              <motion.div key={cat} variants={item}>
-                <Link href={`/talent?category=${encodeURIComponent(cat)}`}>
+              <motion.div key={key} variants={item}>
+                <Link href={{ pathname: "/talent", query: { category: label } }}>
                   <motion.div
                     whileHover={{ y: -4, scale: 1.02 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -65,9 +61,9 @@ export function CategoriesSection() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal/15 text-teal transition-colors group-hover:bg-teal/25">
                       <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="mt-4 font-medium text-foreground">{cat}</h3>
+                    <h3 className="mt-4 font-medium text-foreground">{label}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Explore top-rated {cat.toLowerCase()} professionals
+                      {t("exploreCategory", { category: label })}
                     </p>
                   </motion.div>
                 </Link>

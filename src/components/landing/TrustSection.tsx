@@ -1,32 +1,19 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Shield, Lock, Star, Clock } from "lucide-react";
 
-const signals = [
-  {
-    icon: Shield,
-    title: "Escrow protection",
-    description: "Payments held securely until you approve each milestone and final delivery.",
-  },
-  {
-    icon: Lock,
-    title: "Secure delivery",
-    description: "Preview watermarks and expiring download links protect your work until release.",
-  },
-  {
-    icon: Star,
-    title: "Verified reviews",
-    description: "Authentic ratings from completed projects — build trust on both sides.",
-  },
-  {
-    icon: Clock,
-    title: "Clear timelines",
-    description: "Concept → Draft → Final stages with revision policies you agree on upfront.",
-  },
-];
-
 export function TrustSection() {
+  const t = useTranslations("landing");
+
+  const signals = [
+    { icon: Shield, title: t("trustEscrowTitle"), description: t("trustEscrowDesc") },
+    { icon: Lock, title: t("trustDeliveryTitle"), description: t("trustDeliveryDesc") },
+    { icon: Star, title: t("trustReviewsTitle"), description: t("trustReviewsDesc") },
+    { icon: Clock, title: t("trustTimelineTitle"), description: t("trustTimelineDesc") },
+  ];
+
   return (
     <section id="escrow" className="py-20 bg-secondary/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -36,10 +23,8 @@ export function TrustSection() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <h2 className="font-serif text-3xl font-semibold">Built on trust</h2>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            Our milestone escrow system keeps freelancers and clients aligned at every step.
-          </p>
+          <h2 className="font-serif text-3xl font-semibold">{t("trustTitle")}</h2>
+          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">{t("trustSubtitle")}</p>
         </motion.div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -57,9 +42,7 @@ export function TrustSection() {
                 <s.icon className="h-6 w-6 text-teal" />
               </div>
               <h3 className="mt-4 font-medium">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                {s.description}
-              </p>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.description}</p>
             </motion.div>
           ))}
         </div>

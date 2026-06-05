@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { createDemoOrder, type DemoOrder } from "@/lib/demo-order";
 import { MilestoneTracker } from "@/components/orders/MilestoneTracker";

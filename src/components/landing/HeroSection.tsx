@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, PenLine, Users } from "lucide-react";
 import { useState } from "react";
@@ -10,13 +10,14 @@ import { Input } from "@/components/ui/input";
 import { SakuraPetals } from "./SakuraPetals";
 
 export function HeroSection() {
+  const t = useTranslations("landing");
   const router = useRouter();
   const [query, setQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
-    router.push(q ? `/talent?q=${encodeURIComponent(q)}` : "/talent");
+    router.push(q ? { pathname: "/talent", query: { q } } : "/talent");
   };
 
   return (
@@ -36,15 +37,17 @@ export function HeroSection() {
               className="mb-4 inline-flex items-center gap-2 rounded-full border border-teal/30 bg-teal/10 px-4 py-1.5 text-xs font-medium text-teal"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
-              Premium creative marketplace
+              {t("heroBadge")}
             </motion.p>
             <h1 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Where craft meets{" "}
-              <span className="text-teal">connection</span>
+              {t("heroTitle")}{" "}
+              <span className="text-teal">{t("heroTitleAccent")}</span>
+              {t("heroTitleEnd") && (
+                <span className="text-foreground"> {t("heroTitleEnd")}</span>
+              )}
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground leading-relaxed">
-              Discover exceptional graphic designers, illustrators, and brand artists.
-              Secure escrow, milestone payments, and serene collaboration — all in one place.
+              {t("heroSubtitle")}
             </p>
 
             <form onSubmit={handleSearch} className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -53,12 +56,12 @@ export function HeroSection() {
                 <Input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search designers, skills, or style..."
+                  placeholder={t("searchPlaceholder")}
                   className="h-12 pl-11 rounded-full bg-card/90 shadow-sm"
                 />
               </div>
               <Button type="submit" variant="default" size="lg" className="shrink-0">
-                Search
+                {t("search")}
               </Button>
             </form>
 
@@ -66,14 +69,14 @@ export function HeroSection() {
               <Link href="/talent">
                 <Button variant="navy" size="lg" className="group">
                   <Users className="h-4 w-4" />
-                  Find Talent
+                  {t("findTalent")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link href="/projects/new">
                 <Button variant="outline" size="lg" className="group bg-card/80">
                   <PenLine className="h-4 w-4" />
-                  Post a Project
+                  {t("postProject")}
                 </Button>
               </Link>
             </div>
@@ -91,29 +94,14 @@ export function HeroSection() {
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute inset-0 rounded-3xl bg-gradient-to-br from-teal/20 via-sakura/15 to-beige/30 border border-border/40 shadow-2xl"
               />
-              <svg
-                viewBox="0 0 400 400"
-                className="relative z-10 w-full h-full p-8"
-                aria-hidden
-              >
+              <svg viewBox="0 0 400 400" className="relative z-10 w-full h-full p-8" aria-hidden>
                 <circle cx="200" cy="200" r="160" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-teal/30" />
                 <circle cx="200" cy="200" r="120" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-sakura/40" />
-                <path
-                  d="M200 80 Q280 200 200 320 Q120 200 200 80"
-                  fill="currentColor"
-                  className="text-teal/15"
-                />
+                <path d="M200 80 Q280 200 200 320 Q120 200 200 80" fill="currentColor" className="text-teal/15" />
                 <circle cx="200" cy="160" r="24" fill="currentColor" className="text-sakura/60" />
-                <path
-                  d="M140 240 Q200 280 260 240"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  className="text-navy/40 dark:text-foreground/30"
-                />
+                <path d="M140 240 Q200 280 260 240" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-navy/40 dark:text-foreground/30" />
                 <text x="200" y="360" textAnchor="middle" className="fill-muted-foreground text-[11px] font-serif">
-                  匠 — Takumi
+                  {t("takumi")}
                 </text>
               </svg>
               <motion.div
@@ -121,16 +109,16 @@ export function HeroSection() {
                 animate={{ y: [0, 6, 0] }}
                 transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
               >
-                <p className="text-xs text-muted-foreground">Escrow protected</p>
-                <p className="font-semibold text-teal">$12,400 released</p>
+                <p className="text-xs text-muted-foreground">{t("escrowProtected")}</p>
+                <p className="font-semibold text-teal">{t("escrowReleased")}</p>
               </motion.div>
               <motion.div
                 className="absolute -left-2 bottom-1/4 rounded-2xl border border-border/60 bg-card p-4 shadow-lg"
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 5, repeat: Infinity, delay: 1 }}
               >
-                <p className="text-xs text-muted-foreground">Milestone approved</p>
-                <p className="font-semibold text-sakura-foreground">Draft → Final</p>
+                <p className="text-xs text-muted-foreground">{t("milestoneApproved")}</p>
+                <p className="font-semibold text-sakura-foreground">{t("milestoneStage")}</p>
               </motion.div>
             </div>
           </motion.div>

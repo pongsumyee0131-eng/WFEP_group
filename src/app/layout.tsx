@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
-import { AppProviders } from "@/components/providers/AppProviders";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 const notoSans = Noto_Sans_JP({
@@ -18,22 +15,17 @@ const notoSerif = Noto_Serif_JP({
 });
 
 export const metadata: Metadata = {
-  title: "CraftLink — Premium Creative Freelance Marketplace",
-  description:
-    "Connect with exceptional graphic designers, illustrators, and brand artists. Secure escrow, milestone payments, serene collaboration.",
+  title: "CraftLink",
+  description: "Premium creative freelance marketplace",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${notoSans.variable} ${notoSerif.variable} antialiased min-h-screen flex flex-col`}>
-        <AppProviders>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </AppProviders>
+    <html suppressHydrationWarning>
+      <body className={`${notoSans.variable} ${notoSerif.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );

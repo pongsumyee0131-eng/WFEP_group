@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { Upload, FileText, ArrowRight } from "lucide-react";
 import { getMockFreelancer, MOCK_FREELANCERS } from "@/lib/mock-data";

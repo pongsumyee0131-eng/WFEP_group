@@ -1,10 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export function DualAudienceSection() {
+  const t = useTranslations("landing");
+
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -16,18 +19,13 @@ export function DualAudienceSection() {
             className="rounded-3xl border border-border/60 bg-gradient-to-br from-teal/10 to-transparent p-8 lg:p-10"
           >
             <span className="text-xs font-medium uppercase tracking-wider text-teal">
-              For clients
+              {t("forClients")}
             </span>
-            <h3 className="mt-3 font-serif text-2xl font-semibold">
-              Hire with confidence
-            </h3>
-            <p className="mt-4 text-muted-foreground leading-relaxed">
-              Browse curated portfolios, send detailed briefs, and pay into escrow. Approve work
-              at each milestone before funds release — no surprises.
-            </p>
+            <h3 className="mt-3 font-serif text-2xl font-semibold">{t("clientsTitle")}</h3>
+            <p className="mt-4 text-muted-foreground leading-relaxed">{t("clientsDesc")}</p>
             <Link href="/projects/new" className="mt-6 inline-block">
               <Button variant="navy" size="lg">
-                Post a Project
+                {t("postProject")}
               </Button>
             </Link>
           </motion.div>
@@ -39,18 +37,13 @@ export function DualAudienceSection() {
             className="rounded-3xl border border-border/60 bg-gradient-to-br from-sakura/15 to-transparent p-8 lg:p-10"
           >
             <span className="text-xs font-medium uppercase tracking-wider text-sakura-foreground">
-              For freelancers
+              {t("forFreelancers")}
             </span>
-            <h3 className="mt-3 font-serif text-2xl font-semibold">
-              Showcase your craft
-            </h3>
-            <p className="mt-4 text-muted-foreground leading-relaxed">
-              Build a stunning portfolio, offer service packages, and get paid reliably through
-              milestone releases. Focus on creating — we handle the rest.
-            </p>
+            <h3 className="mt-3 font-serif text-2xl font-semibold">{t("freelancersTitle")}</h3>
+            <p className="mt-4 text-muted-foreground leading-relaxed">{t("freelancersDesc")}</p>
             <Link href="/onboarding" className="mt-6 inline-block">
               <Button variant="sakura" size="lg">
-                Join as Freelancer
+                {t("joinFreelancer")}
               </Button>
             </Link>
           </motion.div>

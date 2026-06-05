@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
 import { MOCK_FREELANCERS } from "@/lib/mock-data";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency, getInitials } from "@/lib/utils";
 
 export function FeaturedFreelancers() {
+  const t = useTranslations("landing");
   const featured = MOCK_FREELANCERS.slice(0, 3);
 
   return (
@@ -15,14 +17,14 @@ export function FeaturedFreelancers() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="font-serif text-3xl font-semibold">Featured talent</h2>
-            <p className="mt-2 text-muted-foreground">Handpicked creatives ready for your next project</p>
+            <h2 className="font-serif text-3xl font-semibold">{t("featuredTitle")}</h2>
+            <p className="mt-2 text-muted-foreground">{t("featuredSubtitle")}</p>
           </div>
           <Link
             href="/talent"
             className="hidden sm:flex items-center gap-1 text-sm text-teal hover:gap-2 transition-all"
           >
-            View all <ArrowRight className="h-4 w-4" />
+            {t("viewAll")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
@@ -53,7 +55,6 @@ export function FeaturedFreelancers() {
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                     <div className="p-5">
                       <div className="flex items-start gap-3">
@@ -77,7 +78,8 @@ export function FeaturedFreelancers() {
                         ))}
                       </div>
                       <p className="mt-3 text-sm text-teal font-medium">
-                        From {formatCurrency(profile.servicePackages[0]?.price ?? profile.hourlyRate ?? 0)}
+                        {t("from")}{" "}
+                        {formatCurrency(profile.servicePackages[0]?.price ?? profile.hourlyRate ?? 0)}
                       </p>
                     </div>
                   </motion.article>
